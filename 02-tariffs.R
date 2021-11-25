@@ -14,7 +14,7 @@ if (!dir.exists("mfn")) {
   }
 }
 
-if (!file.exists("mfn/mfn_applied_rates.parquet")) {
+if (!file.exists("mfn/year=2002")) {
   fcsv <- list.files("mfn", pattern = "CSV$", full.names = T)
   
   tariffs <- map_df(
@@ -245,7 +245,14 @@ if (!file.exists("mfn/mfn_applied_rates.parquet")) {
   tariffs <- tariffs %>%
     distinct()
   
-  write_parquet(tariffs, "mfn/mfn_applied_rates.parquet")
+  # write_parquet(tariffs, "mfn/mfn_applied_rates.parquet")
+  # tariffs <- read_parquet("mfn/mfn_applied_rates.parquet")
+  
+  tariffs %>% 
+    rename(reporter_iso = reporter_iso3) %>% 
+    group_by(year, reporter_iso) %>% 
+    write_dataset("mfn", partitioning = c("year", "reporter_iso"), 
+                  hive_style = T)
   
   file_rem <- list.files("mfn", pattern = "CSV$|zip$|xml$", full.names = T)
   for (x in file_rem) file.remove(x)

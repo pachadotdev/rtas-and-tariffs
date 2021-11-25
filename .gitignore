@@ -1,0 +1,9 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+*.CSV
+*.csv
+*.parquet
+*.ZIP
+*.zip

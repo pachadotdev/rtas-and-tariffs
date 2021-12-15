@@ -14,7 +14,7 @@ treaties_parquet <- gsub("csv", "parquet", treaties_csv)
 if (!file.exists(treaties_parquet)) {
   download.file(treaties_url, treaties_csv)
   treaties <- readr::read_csv(treaties_csv)
-  write_parquet(treaties, treaties_parquet)
+  # write_parquet(treaties, treaties_parquet)
 } else {
   treaties <- read_parquet(treaties_parquet)
 }
@@ -26,7 +26,7 @@ withdrawals_parquet <- gsub("csv", "parquet", withdrawals_csv)
 if (!file.exists(withdrawals_parquet)) {
   download.file(withdrawals_url, withdrawals_csv)
   withdrawals <- readr::read_csv(withdrawals_csv)
-  write_parquet(withdrawals, withdrawals_parquet)
+  # write_parquet(withdrawals, withdrawals_parquet)
 } else {
   withdrawals <- read_parquet(withdrawals_parquet)
 }
@@ -341,7 +341,13 @@ d_rta <- d_rta %>%
   mutate(rta = min(1, rta)) %>%
   ungroup()
 
-write_parquet(d_rta, "rtas/rtas_at_least_one_in_force_per_year.parquet")
+# write_parquet(d_rta, "rtas/rtas_at_least_one_in_force_per_year.parquet")
+# d_rta <- read_parquet("rtas/rtas_at_least_one_in_force_per_year.parquet")
+
+d_rta %>% 
+  filter(year >= 2002) %>% 
+  group_by(year) %>% 
+  write_dataset("rtas", partitioning = "year", hive_style = T)
 
 file_rem <- list.files("rtas", pattern = "csv$", full.names = T)
 for (x in file_rem) file.remove(x)

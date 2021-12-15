@@ -209,8 +209,8 @@ if (!file.exists("mfn/year=2002")) {
         d1 <- d1 %>% 
           ungroup() %>% 
           select(-nomen_code) %>% 
-          rename(hs07_product_code = product_code) %>% 
-          select(year, reporter_iso3, hs07_product_code, everything())
+          rename(commodity_code = product_code) %>% 
+          select(year, reporter_iso3, commodity_code, everything())
       }
       
       return(d1 %>% distinct())

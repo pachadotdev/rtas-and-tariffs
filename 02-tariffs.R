@@ -43,8 +43,8 @@ if (!file.exists("mfn/year=2002")) {
   
   gc()
   
-  tariffs %>% 
-    filter(Reporter_ISO_N == "784", ProductCode == "010310")
+  # tariffs %>% 
+  #   filter(Reporter_ISO_N == "784", ProductCode == "010310")
   
   tariffs <- tariffs %>% 
     janitor::clean_names() %>% 
@@ -164,20 +164,20 @@ if (!file.exists("mfn/year=2002")) {
   
   product_correlation <- product_correlation %>%
     select(hs92:hs17) %>%
-    select(hs07, everything()) %>% 
-    arrange(hs07) %>%
+    select(hs12, everything()) %>% 
+    arrange(hs12) %>%
     pivot_longer(hs92:hs17, "equivalence") %>% 
     mutate(
       equivalence = case_when(
         equivalence == "hs92" ~ "H0",
         equivalence == "hs96" ~ "H1",
         equivalence == "hs02" ~ "H2",
-        # equivalence == "hs07" ~ "H3",
-        equivalence == "hs12" ~ "H4",
+        equivalence == "hs07" ~ "H3",
+        # equivalence == "hs12" ~ "H4",
         equivalence == "hs17" ~ "H5",
       )
     ) %>% 
-    arrange(hs07, equivalence) %>% 
+    arrange(hs12, equivalence) %>% 
     group_by(equivalence) %>% 
     nest()
   
@@ -188,13 +188,13 @@ if (!file.exists("mfn/year=2002")) {
         filter(nomen_code == h) %>% 
         unnest(cols = data)
       
-      if (h != "H3") {
+      if (h != "H4") {
         d2 <- product_correlation %>% 
           filter(equivalence == h) %>% 
           unnest(cols = data) %>% 
           rename(
             product_code = value,
-            hs07_product_code = hs07
+            hs12_product_code = hs12
           ) %>% 
           ungroup() %>% 
           select(-equivalence) %>% 
@@ -204,7 +204,7 @@ if (!file.exists("mfn/year=2002")) {
           left_join(d2) %>% 
           ungroup() %>% 
           select(-nomen_code, -product_code) %>% 
-          select(year, reporter_iso3, hs07_product_code, everything())
+          select(year, reporter_iso3, commodity_code = hs12_product_code, everything())
       } else {
         d1 <- d1 %>% 
           ungroup() %>% 

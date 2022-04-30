@@ -14,7 +14,7 @@ if (!dir.exists("mfn")) {
   }
 }
 
-if (!file.exists("mfn/year=2002")) {
+if (!file.exists("mfn/2002")) {
   fcsv <- list.files("mfn", pattern = "CSV$", full.names = T)
   
   tariffs <- map_df(
@@ -252,7 +252,7 @@ if (!file.exists("mfn/year=2002")) {
     rename(reporter_iso = reporter_iso3) %>% 
     group_by(year, reporter_iso) %>% 
     write_dataset("mfn", partitioning = c("year", "reporter_iso"), 
-                  hive_style = T)
+                  hive_style = F)
   
   file_rem <- list.files("mfn", pattern = "CSV$|zip$|xml$", full.names = T)
   for (x in file_rem) file.remove(x)
